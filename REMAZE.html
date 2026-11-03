@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人作業報告書｜徐 梵凱</title>
+<style>
+  :root{--bg:#f7f8fa;--card:#fff;--line:#e3e6ec;--ink:#22262e;--muted:#6b7280;--accent:#2f6fed;}
+  *{box-sizing:border-box;}
+  body{
+    margin:0;font-size:15.5px;line-height:1.8;
+    font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:36px 18px 60px;}
+  header{border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:22px;}
+  .tag{font-size:12px;color:var(--accent);letter-spacing:.08em;margin-bottom:6px;}
+  h1{font-size:21px;margin:0 0 8px;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px;color:var(--muted);}
+  .meta b{color:var(--ink);font-weight:600;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+  h2{font-size:15.5px;margin:0 0 10px;color:var(--accent);display:flex;align-items:center;gap:8px;}
+  h2::before{content:"";width:6px;height:16px;border-radius:3px;background:var(--accent);}
+  ul{margin:0;padding-left:1.2em;}
+  li{padding:2px 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px;}
+  th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top;}
+  th{color:var(--muted);font-weight:600;font-size:13px;}
+  .keep{color:#1a8a55;font-weight:600;}
+  .back{color:#b9761b;font-weight:600;}
+  p{margin:0;}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px;}
+  @media(max-width:560px){body{font-size:15px;}section{padding:15px 16px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="tag">RE:MAZE ～時間を戻す迷路～ ／ 個人作業報告書</div>
+    <h1>ギミック担当・資料収集フェーズ</h1>
+    <div class="meta">
+      <span><b>日付</b>　2026年11月3日</span>
+      <span><b>氏名</b>　徐 梵凱</span>
+      <span><b>グループ</b>　アイクン</span>
+      <span><b>v.</b>1.0</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>今日やったこと</h2>
+    <ul>
+      <li>自分の担当（スイッチ・ドア・アイテム等のギミック）に必要な資料を集めた</li>
+      <li>時間操作パズルの先行事例を調べ、ギミックの状態設計の参考にした</li>
+      <li>スイッチ・扉・鍵のビジュアル参考資料を整理した</li>
+      <li>GitHub リポジトリの構成を確認し、個人報告書の書き方を把握した</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>これまでに終わったこと</h2>
+    <ul>
+      <li>ギミックの基本方針決定（スイッチ・扉の依存関係、鍵の扱い等）</li>
+      <li>第1関の解法例設計（スイッチ起動 → 時間巻き戻し → 開いた扉を通過）</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>次にやること</h2>
+    <ul>
+      <li>集めた資料をもとに <code>gimmick.js</code> の雛形を作る</li>
+      <li>スイッチ＋扉の「最小動作デモ」を1関分組む</li>
+      <li>アセットの色・サイズ（1タイル何 px か）の仕様を固める</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>ギミック状態の方針（メモ）</h2>
+    <table>
+      <tr><th>種類</th><th>状態</th><th>時間巻き戻し時</th></tr>
+      <tr><td>スイッチ</td><td>OFF ⇄ ON</td><td class="keep">保持</td></tr>
+      <tr><td>扉</td><td>施錠 → 開</td><td class="keep">保持</td></tr>
+      <tr><td>鍵</td><td>未取得 → 取得済</td><td class="keep">保持</td></tr>
+      <tr><td>プレイヤー位置</td><td>現在座標</td><td class="back">巻き戻り</td></tr>
+    </table>
+    <p style="margin-top:10px;font-size:14px;color:var(--muted);">ギミックは「世界の状態」として扱い、巻き戻しのスナップショットには含めない。</p>
+  </section>
+
+  <section>
+    <h2>苦労した（悩んだ）ところ</h2>
+    <p>資料を集める中で、「時間を戻した時にギミックの状態をどこまで戻すか」が一番気になった。鍵を取ってから巻き戻した場合、鍵は手元に残るのか、扉は開いたままか……。組み合わせパターンが増えると挙動が複雑になり、プレイヤーにとって直感的かどうか悩んだ。まだ実装はこれからなので、今回は迷いをメモしておき、動作確認しながらルールをシンプルかつ矛盾なく固めていきたい。</p>
+  </section>
+
+  <footer>RE:MAZE ～時間を戻す迷路～ ｜ アイクン ｜ 個人作業報告書（第1回）</footer>
+
+</div>
+</body>
+</html>
