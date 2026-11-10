@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人作業報告書（第2回）｜徐 梵凱</title>
+<style>
+  :root{--bg:#f7f8fa;--card:#fff;--line:#e3e6ec;--ink:#22262e;--muted:#6b7280;--accent:#2f6fed;}
+  *{box-sizing:border-box;}
+  body{
+    margin:0;font-size:15.5px;line-height:1.8;
+    font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:36px 18px 60px;}
+  header{border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:22px;}
+  .tag{font-size:12px;color:var(--accent);letter-spacing:.08em;margin-bottom:6px;}
+  h1{font-size:21px;margin:0 0 8px;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px;color:var(--muted);}
+  .meta b{color:var(--ink);font-weight:600;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+  h2{font-size:15.5px;margin:0 0 10px;color:var(--accent);display:flex;align-items:center;gap:8px;}
+  h2::before{content:"";width:6px;height:16px;border-radius:3px;background:var(--accent);}
+  ul{margin:0;padding-left:1.2em;}
+  li{padding:2px 0;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px;}
+  th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top;}
+  th{color:var(--muted);font-weight:600;font-size:13px;}
+  .keep{color:#1a8a55;font-weight:600;}
+  .back{color:#b9761b;font-weight:600;}
+  .new{color:#b9761b;font-weight:600;}
+  p{margin:0;}
+  code{background:#eef1f6;padding:1px 6px;border-radius:4px;font-size:13px;
+       font-family:"Yu Gothic",ui-monospace,Menlo,Consolas,monospace;}
+  .note{font-size:13.5px;color:var(--muted);margin-top:10px;}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px;}
+  @media(max-width:560px){body{font-size:15px;}section{padding:15px 16px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="tag">RE:MAZE ～時間を戻す迷路～ ／ 個人作業報告書</div>
+    <h1>ギミック担当・実装フェーズ（ビジュアル確定と最小動作）</h1>
+    <div class="meta">
+      <span><b>日付</b>　2026年11月10日</span>
+      <span><b>氏名</b>　徐 梵凱</span>
+      <span><b>グループ</b>　アイクン</span>
+      <span><b>v.</b>2.0</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>今日やったこと</h2>
+    <ul>
+      <li><b>ギミック・扉・鍵のビジュアルを確定</b>し、ゲーム内に実装して表示テストを行った</li>
+      <li>前回集めた参考資料を元に、3 種類のアイコンを「1 タイル内で判別できる」形に描き起こした</li>
+      <li>実機（画面上）での見え方を確認し、<b>色だけでなく形でも見分けられる</b>ように輪郭を変えた</li>
+      <li><b>「スイッチを踏んでから鍵を取り、扉を開けてゴール」の 1 本道</b>を組んで、通しで動作確認した</li>
+      <li>順番を守れば進める／守らなければ進めない、という前提ルートが成立することを確認した</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>ビジュアル仕様（今回確定）</h2>
+    <table>
+      <tr><th>対象</th><th>形</th><th>色・状態表現</th></tr>
+      <tr><td>スイッチ</td><td>床に埋まった□（角丸）</td><td>OFF＝灰／ON＝<span class="keep">発光グリーン</span></td></tr>
+      <tr><td>鍵</td><td>ひし形＋丸穴</td><td>ゴールド、ゆっくり点滅で「取得可能」を見せる</td></tr>
+      <tr><td>扉</td><td>縦長の長方形（格子入り）</td><td>施錠＝茶・鍵マーク／開＝<span class="keep">枠だけ残して透過</span></td></tr>
+    </table>
+    <p class="note">第1回で決めた方針どおり、<b>ON・開・取得済は「世界の状態」として巻き戻し後も保持</b>する。そこで「保持される状態」は発光／透過で残り、「巻き戻るプレイヤー位置」とは見た目で明確に分けることにした。プレイヤーがルールを「試して覚える」のではなく「見て分かる」ようにするため。</p>
+  </section>
+
+  <section>
+    <h2>実装して分かったこと</h2>
+    <ul>
+      <li>スイッチ → 鍵 → 扉の依存は、<code>gimmick.js</code> 側を「世界状態」、プレイヤー座標だけを「スナップショット」に分ける形でそのまま成立した。第1回の方針で良かった。</li>
+      <li>ただし<b>動作テストで一番つまずいたのはバグではなく「どれが先か分からない」こと</b>だった。鍵が見えていると、プレイヤーはスイッチを飛ばして鍵へ真っ先に向かう。</li>
+      <li>そこで鍵は「スイッチ ON になるまで点滅させない（＝まだ存在しない扱い）」にした。順番を<b>ルールで縛る</b>のではなく<b>見え方で誘導</b>する方が、巻き戻しパズルと相性が良いと感じた。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>これまでに終わったこと</h2>
+    <ul>
+      <li>ギミックの基本方針（状態の保持／巻き戻りの境界）決定</li>
+      <li>第1関の解法例設計と、資料・先行事例の整理</li>
+      <li><span class="new">今回：</span>ギミック 3 種のビジュアル確定＋実装、スイッチ→鍵→扉の最小動作デモ（1 関）完成</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>次にやること</h2>
+    <ul>
+      <li>「スイッチ踏む前に鍵を取りに行った場合」のフィードバック（取れない表示）を詰める</li>
+      <li>時間巻き戻しを<b>挟んだ</b>通しテスト：踏む → 巻き戻す → スイッチは点灯したまま／鍵は手元に残る、を目視で確認する</li>
+      <li>圧力板（乗っている間だけ ON）など「プレイヤーの存在に依存するギミック」を巻き戻しとどう整合させるか、ルールを 1 つ決める</li>
+      <li>タイルサイズ・配置座標の仕様を共有用に 1 枚図へまとめる</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>苦労した（悩んだ）ところ</h2>
+    <p>今回いちばん悩んだのは、「順番縛りを<b>コードで弾く</b>か、<b>見え方で誘導</b>するか」だった。最初は「スイッチを踏んでいない状態で鍵に触れたら無視する」と判定で止めていたが、テストするとプレイヤーは「バグか？」と迷う。結局、鍵自体をスイッチ ON まで非表示（点滅なし）にして、<b>やれることが画面に出てから手を動かす</b>流れに変えた。ルールを増やすより、情報を出すタイミングをずらす方が、このゲームの「時間を戻す」体験と素直に噛み合うと感じた。<br><br>次に気になっているのは圧力板だ。人を巻き戻すと板から足が離れるが、世界状態は「保持」という自分のルールだと板が ON のまま固まる。これが最初の矛盾点になりそうなので、次の実装に入る前に「プレイヤー依存のギミックは例外として巻き戻す」と明記しておくつもり。</p>
+  </section>
+
+  <footer>RE:MAZE ～時間を戻す迷路～ ｜ アイクン ｜ 個人作業報告書（第2回）</footer>
+
+</div>
+</body>
+</html>
